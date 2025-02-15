@@ -1,0 +1,45 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+
+# Gateway route definitions:
+  cloud:
+    gateway:
+      routes:
+        - id: projet-service
+          uri: lb://projet-service
+          predicates:
+            - Path=/projets/**
+        - id: task-service
+          uri: lb://task-service
+          predicates:
+            - Path=/tasks/**
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
+
+
+
+# Expose all actuator endpoints (optional)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.application.name}:${server.port}
+    prefer-ip-address: true
+    hostname: localhost
