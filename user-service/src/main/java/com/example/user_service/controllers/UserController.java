@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -23,4 +24,35 @@ public class UserController {
     public User createUser(@RequestBody User user) {
         return userRepository.save(user);
     }
+
+    @PutMapping("/{id}")
+    public User updateUser(@PathVariable Long id, @RequestBody User user) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        
+        existingUser.setName(user.getName());
+        existingUser.setEmail(user.getEmail());
+        // Set other fields as needed
+        
+        return userRepository.save(existingUser);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        userRepository.deleteById(id);
+    }
+
+//@GetMapping
+//public List<User> getAllUsers() {
+//    List<User> users = userRepository.findAll();
+//    System.out.println("Retrieved users: " + users); // This will print the toString() from @Data
+//    return users;
+//}
+//@PostMapping
+//public User createUser(@RequestBody User user) {
+//    System.out.println("Received user: " + user); // Print the received user object
+//    User savedUser = userRepository.save(user);
+//    System.out.println("Saved user: " + savedUser); // Print the saved user object
+//    return savedUser;
+//}
 }
